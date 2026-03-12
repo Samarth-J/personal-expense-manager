@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { transactionAPI, categoryAPI } from '../services/api';
 import TransactionList from '../components/TransactionList';
 import ChartComponent from '../components/ChartComponent';
+import BudgetTracker from '../components/BudgetTracker';
 import './Dashboard.css';
 
 const Dashboard = ({ user, onAddTransaction }) => {
@@ -125,6 +126,9 @@ const Dashboard = ({ user, onAddTransaction }) => {
 
       {/* Charts */}
       <ChartComponent transactions={transactions} categories={categories} />
+
+      {/* Budget Tracker */}
+      <BudgetTracker user={user} />
 
       {/* Transaction List */}
       <TransactionList 
