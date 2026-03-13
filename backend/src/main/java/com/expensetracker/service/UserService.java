@@ -3,6 +3,7 @@ package com.expensetracker.service;
 import com.expensetracker.entity.User;
 import com.expensetracker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Register a new user
@@ -25,7 +27,8 @@ public class UserService {
             throw new IllegalArgumentException("Email already registered: " + user.getEmail());
         }
         
-        // TODO: Hash password before saving (add Spring Security later)
+        // Hash password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -45,8 +48,8 @@ public class UserService {
         
         User user = userOpt.get();
         
-        // TODO: Compare hashed passwords (add Spring Security later)
-        if (!user.getPassword().equals(password)) {
+        // Compare hashed passwords
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
         }
         
