@@ -41,9 +41,10 @@ const Register = ({ onRegister, onSwitchToLogin }) => {
     try {
       const { confirmPassword, ...registerData } = formData;
       const response = await userAPI.register(registerData);
-      const user = response.data;
+      const { token, user } = response.data;
       
-      // Store user in localStorage
+      // Store token and user in localStorage
+      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       
       // Call parent callback

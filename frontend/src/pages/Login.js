@@ -25,9 +25,10 @@ const Login = ({ onLogin, onSwitchToRegister }) => {
 
     try {
       const response = await userAPI.login(formData);
-      const user = response.data.user;
+      const { token, user } = response.data;
       
-      // Store user in localStorage
+      // Store token and user in localStorage
+      localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       
       // Call parent callback
