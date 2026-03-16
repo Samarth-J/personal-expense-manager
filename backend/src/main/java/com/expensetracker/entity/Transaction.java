@@ -1,6 +1,7 @@
 package com.expensetracker.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,15 +46,17 @@ public class Transaction {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    // Relationships (read-only, for joins)
+    // Relationships (read-only, for joins - excluded from JSON serialization/deserialization)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({"transactions", "categories", "password"})
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "transactions", "user"})
+    @JsonIgnoreProperties({"transactions", "user"})
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Category category;
 
     public enum TransactionType {

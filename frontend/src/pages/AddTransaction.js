@@ -46,7 +46,13 @@ const AddTransaction = ({ user, onBack, onSuccess }) => {
     if (parseFloat(formData.amount) <= 0) { setError('Amount must be greater than 0'); return; }
     setLoading(true);
     try {
-      await transactionAPI.addTransaction(formData);
+      const payload = {
+        ...formData,
+        amount: parseFloat(formData.amount),
+        categoryId: parseInt(formData.categoryId),
+        userId: parseInt(formData.userId)
+      };
+      await transactionAPI.addTransaction(payload);
       if (onSuccess) onSuccess();
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to add transaction');
