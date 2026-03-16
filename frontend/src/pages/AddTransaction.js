@@ -46,16 +46,32 @@ const AddTransaction = ({ user, onBack, onSuccess }) => {
     if (parseFloat(formData.amount) <= 0) { setError('Amount must be greater than 0'); return; }
     setLoading(true);
     try {
+      // Get userId from prop or localStorage fallback
+      const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const resolvedUserId = user?.id || storedUser?.id;
+      if (!resolvedUserId) {
+        setError('User session invalid. Please log out and log back in.');
+        setLoading(false);
+        return;
+      }
       const payload = {
         ...formData,
+        userId: parseInt(resolvedUserId),
         amount: parseFloat(formData.amount),
-        categoryId: parseInt(formData.categoryId),
-        userId: parseInt(formData.userId)
+        categoryId: parseInt(formData.categoryId)
       };
+      console.log('Sending transaction payload:', payload);
       await transactionAPI.addTransaction(payload);
       if (onSuccess) onSuccess();
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to add transaction');
+      console.error('Transaction error:', err.response);
+      if (err.response?.status === 401) {
+        setError('Session expired. Please log out and log back in.');
+      } else if (err.response?.status === 403) {
+        setError('Access denied (403). Please log out and log back in.');
+      } else {
+        setError(err.response?.data?.error || err.response?.data?.message || `Error ${err.response?.status}: Failed to add transaction`);
+      }
     } finally {
       setLoading(false);
     }
