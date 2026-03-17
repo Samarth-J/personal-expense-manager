@@ -147,5 +147,3 @@ If you continue to have issues:
 3. Check that Node.js is installed: `node -version`
 4. Ensure MySQL is running and database is created
 5. Try using an IDE (IntelliJ IDEA or Eclipse) instead of command line
-
-The application is complete and ready to use once the Lombok issue is resolved!
